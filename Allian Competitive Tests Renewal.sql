@@ -1,13 +1,13 @@
 SELECT   distinct homerenewal. Customerid
 
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  ,homerenewal.FirstName as First_Name
-  ,homerenewal.Surname as Last_Name
-  ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
-  ,cast(homerenewal.EndDate as date) as EndDate
-  ,homerenewal.HomeProductStatus as ProductStatus
-  ,homerenewal.AcceptProductCode as ProductNumber
-  ,homerenewal.AcceptProductNumber as RenewalProductCode
+  -- ,homerenewal.FirstName as First_Name
+  -- ,homerenewal.Surname as Last_Name
+  -- ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
+  -- ,cast(homerenewal.EndDate as date) as EndDate
+  -- ,homerenewal.HomeProductStatus as ProductStatus
+  -- ,homerenewal.AcceptProductCode as ProductNumber
+  -- ,homerenewal.AcceptProductNumber as RenewalProductCode
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   ,cast(homerenewal.StartDate as date) as CoverDate
@@ -16,9 +16,6 @@ SELECT   distinct homerenewal. Customerid
   ,case when homerenewal.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
   ,homerenewal.ContentsCoverValue as Contents_Sum_Insured
   ,case when homerenewal.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Contents_AD
-
-  
-
 
   ,homerenewal.VoluntaryExcess as Voluntary_Excess
   ,homerenewal.StandardCompulsoryExcess as Standard_Excess
