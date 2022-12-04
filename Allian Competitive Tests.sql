@@ -2,6 +2,8 @@ SELECT   distinct homemonitor. Customerid
   ,homemonitor.FirstName as First_Name
   ,homemonitor.LastName as Last_Name
   ,homemonitor.IsSale as Is_Sale
+  ,cast(homemonitor.EndDate as date) as EndDate
+  ,homemonitor.HomeProductStatus as ProductStatus
   ,cast(homemonitor.StartDate as date) as CoverDate
   
 

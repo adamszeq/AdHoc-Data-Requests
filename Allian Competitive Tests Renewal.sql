@@ -1,5 +1,15 @@
 SELECT   distinct homerenewal. Customerid
 
+  -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  ,homerenewal.FirstName as First_Name
+  ,homerenewal.Surname as Last_Name
+  ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
+  ,cast(homerenewal.EndDate as date) as EndDate
+  ,homerenewal.HomeProductStatus as ProductStatus
+  ,homerenewal.AcceptProductCode as ProductNumber
+  ,homerenewal.AcceptProductNumber as RenewalProductCode
+  -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
   ,cast(homerenewal.StartDate as date) as CoverDate
 
   ,homerenewal.BuildingsCoverValue as Building_Sum_Insured
@@ -76,4 +86,3 @@ SELECT   distinct homerenewal. Customerid
 
   FROM [OP].[OP].[RenewalHomeMonitor] homerenewal
   WHERE StartDate >= '2022-10-01' AND StartDate < '2022-11-30'
-  -- where homerenewal.PolicyAddOn = 'Contents Accidental Damage' or homerenewal.PolicyAddOn = 'Buildings Accidental Damage'
