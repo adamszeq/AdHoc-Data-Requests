@@ -1,21 +1,22 @@
-SELECT   distinct homerenewal. Customerid
+SELECT   homerenewal.Customerid
 
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  -- ,homerenewal.FirstName as First_Name
-  -- ,homerenewal.Surname as Last_Name
-  -- ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
-  -- ,cast(homerenewal.EndDate as date) as EndDate
-  -- ,homerenewal.HomeProductStatus as ProductStatus
-  -- ,homerenewal.AcceptProductCode as ProductNumber
-  -- ,homerenewal.AcceptProductNumber as RenewalProductCode
+  ,homerenewal.FirstName as First_Name
+  ,homerenewal.Surname as Last_Name
+  ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
+  ,cast(homerenewal.EndDate as date) as EndDate
+  ,homerenewal.HomeProductStatus as ProductStatus
+  ,homerenewal.AcceptProductCode as ProductNumber
+  ,homerenewal.AcceptProductNumber as RenewalProductCode
+  ,homerenewal.PolicyAddOn as PolicyAddOn
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   ,cast(homerenewal.StartDate as date) as CoverDate
 
   ,homerenewal.BuildingsCoverValue as Building_Sum_Insured
-  ,case when homerenewal.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
+  -- ,case when homerenewal.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
   ,homerenewal.ContentsCoverValue as Contents_Sum_Insured
-  ,case when homerenewal.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Contents_AD
+  -- ,case when homerenewal.PolicyAddOn = 'Contents Accidental Damage' then 'Y' else 'N' end as Contents_AD
 
   ,homerenewal.VoluntaryExcess as Voluntary_Excess
   ,homerenewal.StandardCompulsoryExcess as Standard_Excess
@@ -54,8 +55,8 @@ SELECT   distinct homerenewal. Customerid
 
   ,homerenewal.DateOfBirth as Date_of_Birth
 
-  ,NULL as Occupation
-  ,NULL as Employment_Status
+  ,homerenewal.OccupationType as Occupation
+  ,homerenewal.EmploymentType as Employment_Status
 
   ,homerenewal.PropertyType as Dwelling_Type
   ,homerenewal.YearBuilt as Year_Built

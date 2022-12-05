@@ -1,4 +1,4 @@
-SELECT   distinct homemonitor. Customerid
+SELECT    homemonitor.Customerid
 
 -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -7,7 +7,7 @@ SELECT   distinct homemonitor. Customerid
   ,homemonitor.IsSale as Is_Sale
   ,cast(homemonitor.EndDate as date) as EndDate
   ,homemonitor.HomeProductStatus as ProductStatus
-
+  ,homemonitor.PolicyAddOn as PolicyAddOn
 -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -15,9 +15,9 @@ SELECT   distinct homemonitor. Customerid
   
 
   ,homemonitor.BuildingsCoverValue as Building_Sum_Insured
-  ,case when homemonitor.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
+  -- ,case when homemonitor.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
   ,homemonitor.ContentsCoverValue as Contents_Sum_Insured
-  ,case when homemonitor.PolicyAddOn = 'Contents Accidental Damage' then 'Y' else 'N' end as Contents_AD
+  -- ,case when homemonitor.PolicyAddOn = 'Contents Accidental Damage' then 'Y' else 'N' end as Contents_AD
 
 
   ,homemonitor.VoluntaryExcess as Voluntary_Excess
@@ -60,8 +60,8 @@ SELECT   distinct homemonitor. Customerid
 
 
   ,homemonitor.DateOfBirth as Date_of_Birth
-  ,NULL as Occupation
-  ,NULL as Employment_Status
+  ,homemonitor.OccupationType as Occupation
+  ,homemonitor.EmploymentType as Employment_Status
 
 
   ,homemonitor.PropertyType as Dwelling_Type
