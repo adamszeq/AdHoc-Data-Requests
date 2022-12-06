@@ -10,6 +10,8 @@ SELECT    homemonitor.Customerid
   ,homemonitor.PolicyAddOn as PolicyAddOn
 -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+  --populate column QuoteID with 100000000 + row number
+  
 
   ,cast(homemonitor.StartDate as date) as CoverDate
   
@@ -45,7 +47,7 @@ SELECT    homemonitor.Customerid
 
   ,CASE WHEN homemonitor.NeighbourhoodWatchInArea = '1' THEN 'Y' ELSE 'N' END as Neighbourhood_Watch
   ,homemonitor.NumberOfSmokeAlarms as Smoke_Detectors
-  ,CASE WHEN homemonitor.RoofConstructionType = 'NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
+  ,CASE WHEN homemonitor.AlarmType = 'NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
   WHEN homemonitor.AlarmType = 'Installed to EN50131 Standard (Not Connected to Central Station)' THEN 'Standard Alarm' 
   WHEN homemonitor.AlarmType = 'PSA/NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
   WHEN homemonitor.AlarmType = 'Other' THEN 'Other' 

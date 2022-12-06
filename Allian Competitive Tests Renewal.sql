@@ -40,7 +40,7 @@ SELECT   homerenewal.Customerid
   ,CASE WHEN homerenewal.NeighbourhoodWatchInArea = '1' THEN 'Y' ELSE 'N' END as Neighbourhood_Watch
   ,homerenewal.NumberOfSmokeAlarms as Smoke_Detectors
  
-  ,CASE WHEN homerenewal.RoofConstructionType = 'NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
+  ,CASE WHEN homerenewal.AlarmType = 'NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
   WHEN homerenewal.AlarmType = 'Installed to EN50131 Standard (Not Connected to Central Station)' THEN 'Standard Alarm' 
   WHEN homerenewal.AlarmType = 'PSA/NSAI Approved Installer to EN50131 Standard to Central Station' THEN 'Standard Alarm' 
   WHEN homerenewal.AlarmType = 'Other' THEN 'Other' 
