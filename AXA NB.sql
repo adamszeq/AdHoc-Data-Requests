@@ -32,7 +32,9 @@ distinct homemonitor.Customerid
     ,NULL as   Smoke_Locks_Watch
 
 ,case when homemonitor.AlarmType is not null then 'Y' else 'N' end as Alarm
-,homemonitor.hasMotor as Motor_Insurance_Policy
+-- ,homemonitor.hasMotor as Motor_Insurance_Policy
+-- when motorpenetrataion  is 1 or motorholding is 1 then 'Yes' else 'No' end as Motor_Insurance_Policy
+,case when homemonitor.motorPenetration = 1 or homemonitor.motorHolding = 1 then 'Yes' else 'No' end as Motor_Insurance_Policy
 ,homemonitor.AcceptInsurerName as Insurer
 
 ,homemonitor.VoluntaryExcess as Voluntary_Excess

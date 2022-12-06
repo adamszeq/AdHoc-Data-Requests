@@ -7,8 +7,6 @@ distinct homerenewal.Customerid
   ,homerenewal.IsMonthClosedOffRenewal as Is_Sale
   ,cast(homerenewal.EndDate as date) as EndDate
   ,homerenewal.HomeProductStatus as ProductStatus
-  ,homerenewal.AcceptProductCode as ProductNumber
-  ,homerenewal.AcceptProductNumber as RenewalProductCode
   ,homerenewal.PolicyAddOn as PolicyAddOn
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   --Quote
@@ -34,13 +32,14 @@ distinct homerenewal.Customerid
     ,NULL as   Smoke_Locks_Watch
 
 ,case when homerenewal.AlarmType is not null then 'Y' else 'N' end as Alarm
-,homerenewal.hasMotor as Motor_Insurance_Policy
+-- ,homerenewal.hasMotor as Motor_Insurance_Policy
+-- if motorHolding is 1 or motorProductCode is not null then 'Yes' else 'No' as Motor_Insurance_Policy
+,case when homerenewal.MotorHolding = 1 or homerenewal.MotorProductCode is not null then 'Yes' else 'No' end as Motor_Insurance_Policy
 ,homerenewal.AcceptInsurerName as Insurer
 
 ,homerenewal.VoluntaryExcess as Voluntary_Excess
 ,NULL as   Claim_Free_3_years
 ,homerenewal.PedalCycleAmount as Bicycles
---if homerenewal.CaravanId is >1  then 'Y' , if its -1 then No else null
 ,case when homerenewal.CaravanId > 1 then 'Yes' when homerenewal.CaravanId = -1 then 'No' else NULL end as Caravans
 ,homerenewal.CaravanGrantedContentsSumInsuredAmount as  contents_SI
 	,homerenewal.CaravanGrantedStructureSumInsuredAmount as structure_SI
