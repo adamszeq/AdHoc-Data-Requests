@@ -8,8 +8,11 @@ distinct homerenewal.Customerid
   ,cast(homerenewal.EndDate as date) as EndDate
   ,homerenewal.HomeProductStatus as ProductStatus
   ,homerenewal.PolicyAddOn as PolicyAddOn
+  ,homerenewal.OfferProductCode as ProductCode
+  ,homerenewal.StartDate as StartDate
+
+
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  --Quote
 , 'New Business Broker Only' as  Source_of_Business
 ,'AA' as Intermediary
   ,'No' as EconomyProduct 
@@ -22,9 +25,8 @@ distinct homerenewal.Customerid
 ,homerenewal.UnkownAmount as All_Risks_Unspecified_SI
 
 ,Null as Standarad_Of_Construction
- ,homerenewal.YearBuilt as Year_Built
+,homerenewal.YearBuilt as Year_Built
 ,homerenewal.YearsClaimFree as NCD_Years
---get age of customer 
 ,datediff(year, homerenewal.DateOfBirth, getdate()) as Age_Insured
 ,case when homerenewal.NumberOfSmokeAlarms > 0 then 'Y' else 'N' end as Smoke_Alarm
 ,CASE WHEN homerenewal.Locks = '1' THEN 'Y' ELSE 'N' END as Locks
@@ -38,7 +40,10 @@ distinct homerenewal.Customerid
 ,homerenewal.AcceptInsurerName as Insurer
 
 ,homerenewal.VoluntaryExcess as Voluntary_Excess
-,NULL as   Claim_Free_3_years
+-- ,case when homerenewal.FirstClaimDate is not null and homerenewal.FirstClaimDate > dateadd(year,-3,getdate()) then 'Yes' else 'No' end as Claim_Free_3_years
+--convert first claim date from integer to date  and then check if it is greater than 3 years ago
+,case when homerenewal.FirstClaimDate is not null and convert(datetime, convert(char(8), homerenewal.FirstClaimDate)) < dateadd(year,-3,getdate()) then 'Yes' else 'No' end as Claim_Free_3_years
+
 ,homerenewal.PedalCycleAmount as Bicycles
 ,case when homerenewal.CaravanId > 1 then 'Yes' when homerenewal.CaravanId = -1 then 'No' else NULL end as Caravans
 ,homerenewal.CaravanGrantedContentsSumInsuredAmount as  contents_SI
@@ -57,4 +62,4 @@ distinct homerenewal.Customerid
   
 
   FROM [OP].[OP].[RenewalHomeMonitor] homerenewal
-  WHERE StartDate >= '2022-10-01' AND StartDate < '2022-11-30'
+  WHERE homerenewal.StartDate >= '2022-10-01' AND homerenewal.StartDate < '2022-11-30'

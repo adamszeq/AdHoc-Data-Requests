@@ -2,9 +2,9 @@ IF OBJECT_ID('tempdb..#RenewalSMSCampaign') IS NOT NULL
 DROP TABLE #RenewalSMSCampaign
 
 SELECT 
-    distinct [CustomerId]
+    distinct [OfferProductCode]
     ,[StartDate]
-    ,[OfferProductCode]
+    ,[CustomerId]
     ,[LYTotalAmount]
     ,TotalAmountTY
     ,[FirstName]
@@ -19,9 +19,9 @@ SELECT
 	  else cast(floor((TotalAmountTY + isnull(TotalYOYDiscount,0)) - (LYTotalAmount * 1.50)) as varchar) end as Discount
     ,(TotalAmountTY+ isnull(TotalYOYDiscount,0)) -(LYTotalAmount * 1.50) as DiffMaxAndOffered
     ,[YoYreal]
-    ,[ContactMethod]
-    ,[CanBeContacted]
-    ,[Product]
+    -- ,[ContactMethod]
+    -- ,[CanBeContacted]
+    -- ,[Product]
     into #RenewalSMSCampaign
   FROM [OP].[OP].[RenewalHomeMonitor] ren
 
@@ -32,8 +32,10 @@ and IsCancelled =0
 and IsLapsed =0
 and StartDate > CAST( GETDATE() AS Date ) -- greater than today
 and YOYreal > 0.50
+and CanBeContacted = 1
 -- order by OfferProductCode
 
-SELECT * FROM #RenewalSMSCampaign
+-- SELECT * FROM #RenewalSMSCampaign
 
--- WHERE StartDate > '2023-01-01'
+
+

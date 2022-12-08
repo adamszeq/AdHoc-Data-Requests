@@ -8,6 +8,9 @@ distinct homemonitor.Customerid
   ,cast(homemonitor.EndDate as date) as EndDate
   ,homemonitor.HomeProductStatus as ProductStatus
   ,homemonitor.PolicyAddOn as PolicyAddOn
+  ,homemonitor.ProductCode as ProductCode
+  ,homemonitor.StartDate as StartDate
+  
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   --Quote
 , 'New Business Broker Only' as  Source_of_Business
@@ -38,7 +41,7 @@ distinct homemonitor.Customerid
 ,homemonitor.AcceptInsurerName as Insurer
 
 ,homemonitor.VoluntaryExcess as Voluntary_Excess
-,NULL as   Claim_Free_3_years
+,case when homemonitor.FirstClaimDate is not null and convert(datetime, convert(char(8), homemonitor.FirstClaimDate)) < dateadd(year,-3,getdate()) then 'Yes' else 'No' end as Claim_Free_3_years
 ,homemonitor.PedalCycleAmount as Bicycles
 --if homemonitor.CaravanId is >1  then 'Y' , if its -1 then No else null
 ,case when homemonitor.CaravanId > 1 then 'Yes' when homemonitor.CaravanId = -1 then 'No' else NULL end as Caravans
@@ -57,4 +60,4 @@ distinct homemonitor.Customerid
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
   FROM [OP].[OP].[NBHomeMonitor] homemonitor
-  where StartDate >= '2022-10-01' AND StartDate < '2022-11-30'
+  where homemonitor.StartDate >= '2022-10-01' AND homemonitor.StartDate < '2022-11-30'
