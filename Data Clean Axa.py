@@ -12,7 +12,7 @@ def clean(path):
     # df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOn'], keep='first')
     df['PolicyAddOn'] = df['PolicyAddOn'].astype(str)
     df['PolicyAddOns'] = df.groupby('Customerid')['PolicyAddOn'].transform(lambda x: ','.join(x))
-    df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOns'], keep='first') 
+    df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOns','Eircode'], keep='first') 
 
     
     
@@ -21,71 +21,53 @@ def clean(path):
     df['count'] = df.groupby('Customerid')['Customerid'].transform('count')
     
     insurerPercent = (df['Insurer'].value_counts(normalize=True))
+    dfana = df[(df['Bicycles'].notnull()) & (df['Caravans'] == 'Y') & (df['Eircode'].notnull())]
+    dfana = df.groupby('Insurer').head(52)
+    
 
-    dfana = df[(df['Bicycles'].notnull()) & (df['Caravans'] == 'Y')]
-    dfana = df.groupby('Insurer').head(50)
-
-
-   
-    #     # get quantity of rows from each group using insurerPercent
     dfFin = dfana.groupby('Insurer').apply(lambda x: x.sample(frac=insurerPercent[x.name]))
-    colsdrop = ['Customerid','First_Name', 'Last_Name', 'Last_Name', 'Is_Sale', 'EndDate', 'ProductStatus',  'PolicyAddOn','PolicyAddOns','count', 'Smoke_Alarm',	'Locks',	'Neighbourhood_Watch']
-    dfinished = dfFin.drop(colsdrop, axis=1)
-    # RREMOVE DUPLICATES
-    return dfinished
+    colsdrop = ['StartDate','ProductCode','Customerid','First_Name', 'Last_Name', 'Last_Name', 'Is_Sale', 'EndDate', 'ProductStatus',  'PolicyAddOn','PolicyAddOns','count', 'Smoke_Alarm',	'Locks',	'Neighbourhood_Watch']
+    # colsdrop = ['Customerid','First_Name', 'Last_Name', 'Last_Name', 'Is_Sale', 'EndDate', 'ProductStatus',  'PolicyAddOn','PolicyAddOns','count', 'Smoke_Alarm',	'Locks',	'Neighbourhood_Watch']
 
-path = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axaren1.xlsx'
-pathnb = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axanb1.xlsx'
+    dfinished = dfFin.drop(colsdrop, axis=1)
+    return dfinished, dfana
+
+path = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axaren2.xlsx'
+pathnb = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axanb2.xlsx'
 
     
 
-dfren = clean(path)
+dfren, dfanal = clean(path)
 dfren['Source_of_Business'] = 'Renewal'
-# egren = ((dfren[dfren['ProductCode'].str.contains('FOXB33000002')]))
 dfren.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axarenoutput.xlsx', index=False)
-dfnb = clean(pathnb)
+dfnb, dfanaly = clean(pathnb)
 dfnb['Source_of_Business'] = 'New Business (Broker Only)'
 dfnb.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axanboutput.xlsx', index=False)
-# egnb = ((dfnb[dfnb['ProductCode'].str.contains('FOXB33000002')]))
-# print('nb')
-# print(egnb[['Source_of_Business', 'ProductCode', 'Eircode']])
-# print('')
-# print('ren')
-# print(egren[['Source_of_Business', 'ProductCode', 'Eircode']])
 
 
-# dfanal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\dfanal'+path.split('\\')[-1].split('.')[0]+'.xlsx', index=False)
-# dfanaly.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\dfanaly'+pathnb.split('\\')[-1].split('.')[0]+'.xlsx', index=False)
+
+dfanal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\dfanal'+path.split('\\')[-1].split('.')[0]+'.xlsx', index=False)
+dfanaly.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\dfanaly'+pathnb.split('\\')[-1].split('.')[0]+'.xlsx', index=False)
 
 
-# columnList =  ['Source of Business',	'Intermediary',	'Economy Product ',
-# 'Package',	'Buildings Sum Insured',	'Contents Sum Insured',
-# 'All Risks Specified SI',	'All Risks Unspecified SI',
-# 'Standard of Construction',	'Year of Construction',
-# 'NCD Years',	'Age Insured',	'Smoke/Locks/Watch',
-# 'Alarm',	'Motor Insurance Policy',
-# 'Current Insurer',	'Voluntary Excess',	'Claim Free 3+ years',	'Bicycles',
-# 'Caravans',	'structure SI',	'contents SI',	'Firearms',
-# 'Childminding 7 children or less',	'Childminding more than 8 children',
-# 'Music Tutor',	'Art Tutor',	'Surgery',	'Students',	'Small Area Code']    
+columnList =  ['Source of Business',	'Intermediary',	'Economy Product ',
+'Package',	'Buildings Sum Insured',	'Contents Sum Insured',
+'All Risks Specified SI',	'All Risks Unspecified SI',
+'Standard of Construction',	'Year of Construction',
+'NCD Years',	'Age Insured',	'Smoke/Locks/Watch',
+'Alarm',	'Motor Insurance Policy',
+'Current Insurer',	'Voluntary Excess',	'Claim Free 3+ years',	'Bicycles',
+'Caravans',	'structure SI',	'contents SI',	'Firearms',
+'Childminding 7 children or less',	'Childminding more than 8 children',
+'Music Tutor',	'Art Tutor',	'Surgery',	'Students',	'Small Area Code']    
 
-dfinal = pd.concat([ dfnb, dfren])
-# append the dataframes
-# dfinal = dfnb.append(dfren, ignore_index=True)
-# print(dfinal)
-# dfinal.columns = columnList
+dfinal = pd.concat([dfren,dfnb])
 
-# add index xolumn to the dataframe
+dfinal.columns = columnList
+
 dfinal.insert(0, 'Quote ID', range(100000000
 , 100000000
  + len(dfinal)))
 
 dfinal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\Batch Input Template-AXA Broker Home.xlsx', index=False)
 
-# dfren, dfanal = clean(path)
-# dfnb, dfanaly = clean(pathnb)
-# dfinal = pd.concat([ dfnb, dfren])
-
-# # print(dfinal)
-# # print duplicates in the dataframe
-# print(dfinal[dfinal.duplicated(['Eircode'], keep='first')])
