@@ -13,18 +13,32 @@ distinct homerenewal.Customerid
 
 
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-, 'New Business Broker Only' as  Source_of_Business
+, 'Renewal' as  Source_of_Business
 ,'AA' as Intermediary
   ,'No' as EconomyProduct 
     ,NULL as Package
 ,homerenewal.BuildingsCoverValue as Building_Sum_Insured
 ,homerenewal.ContentsCoverValue as Contents_Sum_Insured
-,homerenewal.OtherAmount  + homerenewal.HearingAidAmount 
+-- ,homerenewal.OtherAmount  + homerenewal.HearingAidAmount 
+--     + homerenewal.MobilePhoneAmount + homerenewal.LaptopAmount + homerenewal.PictureAmount 
+--     + homerenewal.JewelleryAmount as All_Risks_Specified_SI
+-- ,homerenewal.UnspecifiedItemAmount as All_Risks_Unspecified_SI
+--if policyAddOn UnSpecifiedAllRisks then add 
+,case when homerenewal.PolicyAddOn = 'Specified All Risk' then 
+homerenewal.OtherAmount  + homerenewal.HearingAidAmount 
     + homerenewal.MobilePhoneAmount + homerenewal.LaptopAmount + homerenewal.PictureAmount 
-    + homerenewal.JewelleryAmount as All_Risks_Specified_SI
-,homerenewal.UnkownAmount as All_Risks_Unspecified_SI
+    + homerenewal.JewelleryAmount  + homerenewal.UnspecifiedItemAmount+ homerenewal.MusicalInstrumentAmount + homerenewal.CamcorderAmount
+    +FursAmount + TabletAmount
+    else 0 end as All_Risks_Specified_SI
 
-,Null as Standarad_Of_Construction
+,case when homerenewal.PolicyAddOn = 'Unspecified All Risks' then homerenewal.OtherAmount  + homerenewal.HearingAidAmount 
+    + homerenewal.MobilePhoneAmount + homerenewal.LaptopAmount + homerenewal.PictureAmount 
+    + homerenewal.JewelleryAmount  + homerenewal.UnspecifiedItemAmount + homerenewal.MusicalInstrumentAmount + homerenewal.CamcorderAmount
+    +FursAmount + TabletAmount
+    else 0 end as All_Risks_Unspecified_SI
+
+,CASE WHEN homerenewal.RoofConstructionType = 'Standard' THEN 'Standard' ELSE 'Non Standard' + ' ' + convert(varchar(10), homerenewal.RoofNonStandardPercentage) + '%' END as Standard_Of_Construction
+
 ,homerenewal.YearBuilt as Year_Built
 ,homerenewal.YearsClaimFree as NCD_Years
 ,datediff(year, homerenewal.DateOfBirth, getdate()) as Age_Insured
@@ -61,5 +75,6 @@ distinct homerenewal.Customerid
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   
 
-  FROM [OP].[OP].[RenewalHomeMonitor] homerenewal
+  FROM [OP].[OP].[Renewalhomemonitor] homerenewal
   WHERE homerenewal.StartDate >= '2022-10-01' AND homerenewal.StartDate < '2022-11-30'
+  -- and homerenewal.UnspecifiedItemAmount > 0

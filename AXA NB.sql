@@ -1,7 +1,7 @@
 SELECT  
 
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-distinct homemonitor.Customerid
+ distinct homemonitor.Customerid
   ,homemonitor.FirstName as First_Name
   ,homemonitor.LastName as Last_Name
   ,homemonitor.IsSale as Is_Sale
@@ -10,7 +10,8 @@ distinct homemonitor.Customerid
   ,homemonitor.PolicyAddOn as PolicyAddOn
   ,homemonitor.ProductCode as ProductCode
   ,homemonitor.StartDate as StartDate
-  
+  -- Non Standard <34%
+
   -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   --Quote
 , 'New Business Broker Only' as  Source_of_Business
@@ -19,12 +20,41 @@ distinct homemonitor.Customerid
     ,NULL as Package
 ,homemonitor.BuildingsCoverValue as Building_Sum_Insured
 ,homemonitor.ContentsCoverValue as Contents_Sum_Insured
-,homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
-    + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
-    + homemonitor.JewelleryAmount as All_Risks_Specified_SI
-,homemonitor.UnkownAmount as All_Risks_Unspecified_SI
+-- ,homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
+--     + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+--     + homemonitor.JewelleryAmount as All_Risks_Specified_SI
+-- ,homemonitor.UnspecifiedItemAmount as All_Risks_Unspecified_SI
+--if policyaddon is 'U'nspecified All Risks' then sum homemonitor.OtherAmount  + homemonitor.HearingAidAmount + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+--     + homemonitor.JewelleryAmount  + homemonitor.UnspecifiedItemAmount as All_Risks_Specified_unSI 
+,case when homemonitor.PolicyAddOn = 'Specified All Risk' 
 
-,Null as Standarad_Of_Construction
+then homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
+    + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+    + homemonitor.JewelleryAmount  + homemonitor.UnspecifiedItemAmount+ homemonitor.MusicalInstrumentAmount + homemonitor.CamcorderAmount
+    +FursAmount + TabletAmount
+    else 0 end as All_Risks_Specified_SI
+
+,case when homemonitor.PolicyAddOn = 'Unspecified All Risks' 
+
+ then homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
+    + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+    + homemonitor.JewelleryAmount  + homemonitor.UnspecifiedItemAmount+ homemonitor.MusicalInstrumentAmount + homemonitor.CamcorderAmount
+    +FursAmount + TabletAmount
+
+    else 0 end as All_Risks_Unspecified_SI
+
+
+
+
+
+--if policyaddon is Building and Contents then sum -- -- ,homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
+--     + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+--     + homemonitor.JewelleryAmount  + homemonitor.UnspecifiedItemAmount as All_Risks_Specified_SI 
+
+-- ,CASE WHEN homemonitor.RoofConstructionType = 'Standard' THEN 'Standard' ELSE 'Non Standard' END as RoofStandard
+-- ,homemonitor.RoofNonStandardPercentage as NonStandardRoofPercentage
+-- convert RoofNonStandardPercentage as % and combine columns RoofConstructionType and RoofNonStandardPercentage as Standard_Of_Construction
+,CASE WHEN homemonitor.RoofConstructionType = 'Standard' THEN 'Standard' ELSE 'Non Standard' + ' ' + convert(varchar(10), homemonitor.RoofNonStandardPercentage) + '%' END as Standard_Of_Construction
  ,homemonitor.YearBuilt as Year_Built
 ,homemonitor.YearsClaimFree as NCD_Years
 --get age of customer 
@@ -61,3 +91,5 @@ distinct homemonitor.Customerid
   
   FROM [OP].[OP].[NBHomeMonitor] homemonitor
   where homemonitor.StartDate >= '2022-10-01' AND homemonitor.StartDate < '2022-11-30'
+  -- and homemonitor.UnspecifiedItemAmount > 0
+  -- and  PolicyAddOn = 'Buildings Accidental Damage'

@@ -9,31 +9,50 @@ pd.set_option('display.max_colwidth', -1)
 def clean(path):
     df = pd.read_excel(path)    
     df['Smoke_Locks_Watch'] = df.apply(lambda x: 'Y' if x['Smoke_Alarm'] == 'Y' or x['Locks'] == 'Y' or x['Neighbourhood_Watch'] == 'Y' else 'N', axis=1)
-    # df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOn'], keep='first')
     df['PolicyAddOn'] = df['PolicyAddOn'].astype(str)
-    df['PolicyAddOns'] = df.groupby('Customerid')['PolicyAddOn'].transform(lambda x: ','.join(x))
-    df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOns','Eircode'], keep='first') 
+    # df = df[df['PolicyAddOn'].str.contains('Buildings Accidental Damage')]
 
+    df['PolicyAddOns'] = df.groupby('Customerid')['PolicyAddOn'].transform(lambda x: ','.join(x))
     
-    
-    df['Package'] = df['PolicyAddOns'].apply(lambda x: 'CO' if 'Contents Accidental Damage' in x and 'Buildings Accidental Damage' not in x else 'BO' if 'Contents Accidental Damage' not in x and 'Buildings Accidental Damage'  in x else 'B&C' if 'Contents Accidental Damage' in x and 'Buildings Accidental Damage'  in x else ' ')
+    df = df.drop_duplicates(subset=['Customerid', 'PolicyAddOns','Eircode'], keep='first') 
+    df = df.sort_values(by=['Caravans'], ascending=False)
+  
+    df = df[df['Eircode'].notnull()]
+    df = df[(df['All_Risks_Unspecified_SI']>0) | (df['All_Risks_Specified_SI']>0)]
+
+
+    df['Package'] = df['PolicyAddOns'].apply(lambda x: 
+    'CO' if 'Contents Accidental Damage' in x and 'Buildings Accidental Damage' not in x 
+    else 'B&C' if 'Contents Accidental Damage' not in x and 'Buildings Accidental Damage'  in x 
+    else 'B&C' if 'Contents Accidental Damage' in x and 'Buildings Accidental Damage'  in x 
+    else 'B&C' if 'Buildings Accidental Damage'  in x 
+    else 'B&C' if 'Contents Accidental Damage'  in x 
+    else ' ')
+    # only keep rows with package B&C
+    # df = df[df['Package'] == 'B&C']
+    # df = df.drop_duplicates(subset=['Customerid'], keep='first') 
+    # df = df[df['Eircode'].notnull()]
 
     df['count'] = df.groupby('Customerid')['Customerid'].transform('count')
     
     insurerPercent = (df['Insurer'].value_counts(normalize=True))
     dfana = df[(df['Bicycles'].notnull()) & (df['Caravans'] == 'Y') & (df['Eircode'].notnull())]
+    # dfana = df[(df['Eircode'].notnull())]
+
     dfana = df.groupby('Insurer').head(52)
-    
+
+    df = df.drop_duplicates(subset=['Customerid'], keep='first') 
 
     dfFin = dfana.groupby('Insurer').apply(lambda x: x.sample(frac=insurerPercent[x.name]))
+
     colsdrop = ['StartDate','ProductCode','Customerid','First_Name', 'Last_Name', 'Last_Name', 'Is_Sale', 'EndDate', 'ProductStatus',  'PolicyAddOn','PolicyAddOns','count', 'Smoke_Alarm',	'Locks',	'Neighbourhood_Watch']
     # colsdrop = ['Customerid','First_Name', 'Last_Name', 'Last_Name', 'Is_Sale', 'EndDate', 'ProductStatus',  'PolicyAddOn','PolicyAddOns','count', 'Smoke_Alarm',	'Locks',	'Neighbourhood_Watch']
 
     dfinished = dfFin.drop(colsdrop, axis=1)
     return dfinished, dfana
 
-path = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axaren2.xlsx'
-pathnb = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axanb2.xlsx'
+path = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axaren1.xlsx'
+pathnb = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\axanb1.xlsx'
 
     
 
@@ -68,6 +87,10 @@ dfinal.columns = columnList
 dfinal.insert(0, 'Quote ID', range(100000000
 , 100000000
  + len(dfinal)))
+# dfinal = pd.read_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\Batch Input Template-AXA Broker Home.xlsx')
 
-dfinal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\Batch Input Template-AXA Broker Home.xlsx', index=False)
+dfinal = dfinal.sample(frac=1).reset_index(drop=True)
+
+dfinal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\Batch Input Template-AXA Broker Home (AA).xlsx', index=False)
+# dfinal.to_excel(r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\Batch Input Template-AXA Broker Home.xlsx', index=False)
 

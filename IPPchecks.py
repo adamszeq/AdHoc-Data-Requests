@@ -90,3 +90,17 @@ print(optimalIPPnewListtoIncreaseIPPnow(allIPP))
 allIPP = [random.sample(range(50, 150), 3) for x in range(10)]
 
 
+disoucntlimit = 150
+yoylimit = 0.5
+
+def discountToBeAssigned(yoy, lastyearamount, currentyearamount):
+  
+    # create a function that takes in yoy and lastyearamount and currentyearamount and returns a discount
+    # discount = 0
+    # if yoy > yoylimit:
+    #     discount = 0
+    # elif yoy < yoylimit:
+    
+
+
+
