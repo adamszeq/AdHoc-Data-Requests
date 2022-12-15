@@ -1,4 +1,4 @@
-SELECT    homemonitor.Customerid
+SELECT    distinct homemonitor.ProductCode AS ProductCode
 
 -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -18,17 +18,36 @@ SELECT    homemonitor.Customerid
 
   ,homemonitor.BuildingsCoverValue as Building_Sum_Insured
   -- ,case when homemonitor.PolicyAddOn = 'Buildings Accidental Damage' then 'Y' else 'N' end as Buildings_AD
+  ,NULL AS Buildings_AD
   ,homemonitor.ContentsCoverValue as Contents_Sum_Insured
   -- ,case when homemonitor.PolicyAddOn = 'Contents Accidental Damage' then 'Y' else 'N' end as Contents_AD
+  ,null as Contents_AD
 
 
-  ,homemonitor.VoluntaryExcess as Voluntary_Excess
-  ,homemonitor.StandardCompulsoryExcess as Standard_Excess
-  ,homemonitor.NonStandardCompulsoryExcess as Non_Standard_Excess
+  -- ,homemonitor.VoluntaryExcess as Voluntary_Excess
+  -- ,homemonitor.StandardCompulsoryExcess as Standard_Excess
+  -- ,homemonitor.NonStandardCompulsoryExcess as Non_Standard_Excess
+  ,CONVERT(INT,
+        CASE
+        WHEN IsNumeric(CONVERT(VARCHAR(12), homemonitor.VoluntaryExcess)) = 1 THEN CONVERT(VARCHAR(12),homemonitor.VoluntaryExcess)
+        ELSE 0 END) as Voluntary_Excess
+  -- ,cast(homemonitor.VoluntaryExcess as int) as Voluntary_Excess
+  -- ,cast(homemonitor.StandardCompulsoryExcess as int) as StandardCompulsoryExcess
+
+  ,CONVERT(INT,
+        CASE
+        WHEN IsNumeric(CONVERT(VARCHAR(12), homemonitor.StandardCompulsoryExcess)) = 1 THEN CONVERT(VARCHAR(12),homemonitor.StandardCompulsoryExcess)
+        ELSE 0 END) as Standard_Excess
+  -- ,cast(homemonitor.NonStandardCompulsoryExcess as int) as NonStandardCompulsoryExcess
+
+  ,CONVERT(INT,
+        CASE
+        WHEN IsNumeric(CONVERT(VARCHAR(12), homemonitor.NonStandardCompulsoryExcess)) = 1 THEN CONVERT(VARCHAR(12),homemonitor.NonStandardCompulsoryExcess)
+        ELSE 0 END) as Non_Standard_Excess
   ,NULL as Policy_Excess
 
 
-  ,homemonitor.YearsClaimFree as YearsClaimFree
+  ,CASE WHEN homemonitor.FirstClaimDate is not null THEN DATEDIFF(year, cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime), getdate()) ELSE NULL END as YearsClaimFree
 
 
   ,CASE WHEN cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime) < '2020-01-01' THEN NULL ELSE homemonitor.FirstClaimType END as ClaimType1
@@ -55,8 +74,15 @@ SELECT    homemonitor.Customerid
   ,CASE WHEN homemonitor.Locks = '1' THEN 'Y' ELSE 'N' END as Locks
 
 
-   ,homemonitor.BuildingUnitNumber + ' ' + homemonitor.BuildingNumber + ' ' + homemonitor.StreetName
-  + ' ' + homemonitor.Town + ' ' + homemonitor.County  as Risk_Address
+  --  ,homemonitor.BuildingUnitNumber + ' ' + homemonitor.BuildingNumber + ' ' + homemonitor.StreetName
+  -- + ' ' + homemonitor.Town + ' ' + homemonitor.County  as Risk_Address
+  ,homemonitor.BuildingUnitNumber as Unit_Number
+  ,homemonitor.BuildingNumber as Building_Number
+  ,homemonitor.StreetName as Street_Name
+  ,homemonitor.Town as Town
+  ,homemonitor.County as County
+  ,null as Risk_Address
+
   ,homemonitor.Postcode as  Eircode
   ,homemonitor.County as County
 
@@ -71,6 +97,7 @@ SELECT    homemonitor.Customerid
   ,CASE WHEN homemonitor.RoofConstructionType = 'Standard' THEN 'Y' ELSE 'N' END as RoofStandard
   ,homemonitor.RoofNonStandardPercentage as NonStandardRoofPercentage
   ,homemonitor.ResidenceType as Occupancy_Type
+  ,homemonitor.Proposer as Proposer
   ,homemonitor.NumberOfPayingGuests AS Number_of_Paying_Guests
   ,homemonitor.NumberOfBedrooms as Number_of_Bedrooms
   ,homemonitor.NumberOfBathrooms as Number_of_Bathrooms
@@ -78,7 +105,12 @@ SELECT    homemonitor.Customerid
 
 
 
-  ,homemonitor.UnkownAmount as Unspecified_Risks_Sum_Insured
+  ,case when homemonitor.PolicyAddOn = 'Unspecified All Risks' then homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
+    + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
+    + homemonitor.JewelleryAmount  + homemonitor.UnspecifiedItemAmount + homemonitor.MusicalInstrumentAmount + homemonitor.CamcorderAmount
+    +FursAmount + TabletAmount
+    else 0 end as Unspecified_Risks_Sum_Insured
+
   ,NULL as Specified_Items_Cash
   ,homemonitor.OtherAmount as Specified_Items_Other
   ,homemonitor.PedalCycleAmount as Specified_Items_Bicycles
