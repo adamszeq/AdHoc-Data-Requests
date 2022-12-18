@@ -18,7 +18,7 @@ SELECT
 ,'AA' as Intermediary
   ,'No' as EconomyProduct 
     ,NULL as Package
-,homemonitor.BuildingsCoverValue as Building_Sum_Insured
+,homemonitor.meCoverValue as Building_Sum_Insured
 ,homemonitor.ContentsCoverValue as Contents_Sum_Insured
 -- ,homemonitor.OtherAmount  + homemonitor.HearingAidAmount 
 --     + homemonitor.MobilePhoneAmount + homemonitor.LaptopAmount + homemonitor.PictureAmount 
