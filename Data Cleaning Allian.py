@@ -15,11 +15,12 @@ def removeDuplicates(path):
 
 
 
-    df = df[(df.Building_Sum_Insured != 0) & (df.Contents_Sum_Insured != 0)]
-    # df = df[df['Unspecified_Risks_Sum_Insured'].notna()]
-    # remove rows with no specified items ut keep if Occupancy_Type is not 'Owner Occupied'
-    df = df[(df['Unspecified_Risks_Sum_Insured'].notna()) | (df['Specified_Items_Photographic'].notna()) | (df['Specified_Items_Glasses_Contacts'].notna()) | (df['Occupancy_Type'] != 'Owner Occupied')]
-    # remove rows with OwnerOccupied and no specified items
+    # df = df[(df.Building_Sum_Insured != 0) & (df.Contents_Sum_Insured != 0)]
+    # df = df[(df['Unspecified_Risks_Sum_Insured'].notna()) | (df['Specified_Items_Photographic'].notna()) | (df['Specified_Items_Glasses_Contacts'].notna()) | (df['Occupancy_Type'] != 'Owner Occupied')]
+
+
+ 
+
     # df = df[(df['Occupancy_Type'] != 'Owner Occupied') | (df['Specified_Items_Cash'].notna()) | (df['Specified_Items_Other'].notna()) | (df['Specified_Items_Bicycles'].notna()) | (df['Specified_Items_Hearing_Aids'].notna()) | (df['Specified_Items_Mobile_Phones'].notna()) | (df['Specified_Items_Laptops'].notna()) | (df['Specified_Items_Photographic'].notna()) | (df['Specified_Items_Glasses_Contacts'].notna()) | (df['Specified_Items_Jewellery'].notna())]
     # # df = df[df['Specified_Items_Cash'].notna()]
     # df = df[df['Specified_Items_Other'].notna()]
@@ -28,9 +29,11 @@ def removeDuplicates(path):
     # df = df[df['Specified_Items_Mobile_Phones'].notna()]
     # df = df[df['Specified_Items_Laptops'].notna()]
     # df = df[df['Specified_Items_Photographic'].notna()]
+
+
     df = df[df['Year_Built'].notna()]
-    df = df[df['Employment_Status'].notna()]
-    df = df[df['YearsClaimFree'].notna()]
+    # df = df[df['Employment_Status'].notna()]
+    # df = df[df['YearsClaimFree'].notna()]
     df = df[df['Date_of_Birth'].notna()]
 
     df = df.drop_duplicates(subset=['ProductCode'], keep='first')
@@ -92,7 +95,6 @@ dfnbPath = r'C:\Users\adamszeq\Desktop\Clones\AdHoc-Data-Requests\Data\allianznb
 
 dfren, dfanalren = removeDuplicates(dfrenPath)
 dfnb, dfanalnb = (removeDuplicates(dfnbPath))
-
 
 dffull = dfren.append(dfnb, ignore_index=True)
 dffull = dffull.drop_duplicates(subset=['Eircode'], keep='last') 

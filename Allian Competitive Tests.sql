@@ -9,9 +9,7 @@ SELECT    distinct homemonitor.ProductCode AS ProductCode
   ,homemonitor.HomeProductStatus as ProductStatus
   ,homemonitor.PolicyAddOn as PolicyAddOn
 -- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  --populate column QuoteID with 100000000 + row number
-  
+--   YearsClaimFree
 
   ,cast(homemonitor.StartDate as date) as CoverDate
   
@@ -47,8 +45,8 @@ SELECT    distinct homemonitor.ProductCode AS ProductCode
   ,NULL as Policy_Excess
 
 
-  ,CASE WHEN homemonitor.FirstClaimDate is not null THEN DATEDIFF(year, cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime), getdate()) ELSE NULL END as YearsClaimFree
-
+--   ,CASE WHEN homemonitor.FirstClaimDate is not null THEN DATEDIFF(year, cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime), getdate()) ELSE NULL END as YearsClaimFree
+,homemonitor.YearsClaimFree as YearsClaimFree
 
   ,CASE WHEN cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime) < '2020-01-01' THEN NULL ELSE homemonitor.FirstClaimType END as ClaimType1
   ,CASE WHEN cast(cast(homemonitor.FirstClaimDate as char(8)) as datetime) < '2020-01-01' THEN NULL ELSE homemonitor.FirstClaimDate END as ClaimDate1
@@ -123,5 +121,5 @@ SELECT    distinct homemonitor.ProductCode AS ProductCode
 
 
   FROM [OP].[OP].[NBHomeMonitor] homemonitor
-  where StartDate >= '2022-10-01' AND StartDate < '2022-11-30'
+  where StartDate >= '2022-08-01' AND StartDate < '2022-11-30'
 

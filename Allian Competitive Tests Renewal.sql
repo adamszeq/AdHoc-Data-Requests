@@ -38,7 +38,8 @@ SELECT   distinct homerenewal.OfferProductCode as ProductCode
   ,NULL as Policy_Excess
 
 
-  ,CASE WHEN homerenewal.FirstClaimDate is not null THEN DATEDIFF(year, cast(cast(homerenewal.FirstClaimDate as char(8)) as datetime), getdate()) ELSE NULL END as YearsClaimFree
+--   ,CASE WHEN homerenewal.FirstClaimDate is not null THEN DATEDIFF(year, cast(cast(homerenewal.FirstClaimDate as char(8)) as datetime), getdate()) ELSE NULL END as YearsClaimFree
+,homerenewal.YearsClaimFree as YearsClaimFree
 
   ,CASE WHEN cast(cast(homerenewal.FirstClaimDate as char(8)) as datetime) < '2020-01-01' THEN NULL ELSE homerenewal.FirstClaimType END as ClaimType1
   ,CASE WHEN cast(cast(homerenewal.FirstClaimDate as char(8)) as datetime) < '2020-01-01' THEN NULL ELSE homerenewal.FirstClaimDate END as ClaimDate1
@@ -113,4 +114,4 @@ SELECT   distinct homerenewal.OfferProductCode as ProductCode
 
 
   FROM [OP].[OP].[RenewalHomeMonitor] homerenewal
-  WHERE StartDate >= '2022-10-01' AND StartDate < '2022-11-30'
+  WHERE StartDate >= '2022-08-01' AND StartDate < '2022-11-30'
